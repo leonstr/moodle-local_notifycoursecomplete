@@ -27,3 +27,5 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['messageprovider:teacherstudentcomplete'] = 'Teacher\'s student completed course';
 $string['pluginname'] = 'Notify teacher course completed';
+$string['coursecompleted'] = 'Course completed';
+$string['coursecompletedmessage'] = '<p>Student [TBC] has completed the course <a href="{$a->courselink}">{$a->coursename}</a>.</p>';
