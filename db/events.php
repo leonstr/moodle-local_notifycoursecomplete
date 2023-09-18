@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 $observers = array(
 
     array(
-        'eventname' => 'coursecompleted',
-        'callback' => 'course_completed',
+        'eventname' => '\core\event\course_completed',
+        'callback' => 'local_notifycoursecomplete\event\observer::course_completed',
     ),
 );
