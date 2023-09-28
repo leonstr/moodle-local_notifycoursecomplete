@@ -1,8 +1,8 @@
-# Notify teacher course completed #
+# Notify teacher when student completes course #
 
-TODO Describe the plugin shortly here.
+Add a notification sent to the teacher when their student completes the course.
 
-TODO Provide more detailed description here.
+This grew out of [MDL-79378 Teacher notification when student completes course](https://tracker.moodle.org/browse/MDL-79378).
 
 ## Installing via uploaded ZIP file ##
 
