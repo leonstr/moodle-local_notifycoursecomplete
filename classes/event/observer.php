@@ -29,7 +29,7 @@ class observer {
         global $USER, $DB;
 
         // FIXME Is there a better/API way to get student user details?
-        $student = $DB->get_record('user', array('id' => $event->userid), '*', MUST_EXIST);
+        $student = $DB->get_record('user', array('id' => $event->relateduserid), '*', MUST_EXIST);
 
         $course = get_course($event->courseid);
         $context = \context_course::instance($course->id);
