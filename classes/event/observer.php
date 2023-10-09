@@ -56,23 +56,23 @@ class observer {
         $eventdata->fullmessageformat = FORMAT_HTML;
         $eventdata->fullmessagehtml   = $messagebody;
         $eventdata->smallmessage      = $messageplaintext;
-        $users = get_enrolled_users($context, 'report/completion:view');
+        $teachers = get_enrolled_users($context, 'report/completion:view');
 
         $separategroups = ($course->groupmode == SEPARATEGROUPS);
 
-        foreach ($users as $user) {
-            $eventdata->userto = $user->id;
+        foreach ($teachers as $teacher) {
+            $eventdata->userto = $teacher->id;
 
             // As groups_user_groups_visible() compares the target user with
             // the current $USER we must populate that global, stashing and
             // restoring the value before and after the call.
             $olduser = $USER;
-            $USER = $user;
+            $USER = $teacher;
 
             // If the course does not have Group mode: Separate groups, or the
             // recipient has accessallgroups, or the recipient is in the same
             // group as the student then send message.
-            if (!$separategroups || has_capability('moodle/site:accessallgroups', $context, $event->userid) || groups_user_groups_visible($course, $event->userid)) {
+            if (!$separategroups || has_capability('moodle/site:accessallgroups', $context, $teacher) || groups_user_groups_visible($course, $student->id)) {
                 message_send($eventdata);
             }
 
