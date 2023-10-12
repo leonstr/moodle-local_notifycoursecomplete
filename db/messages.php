@@ -23,10 +23,12 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 $messageproviders = [
-
-    'teacherstudentcomplete' => array(
-    ),
+    'teacherstudentcomplete' => [
+        'defaults' => [
+            'popup' => MESSAGE_PERMITTED,
+            'email' => MESSAGE_PERMITTED,
+            'airnotifier' => MESSAGE_PERMITTED,
+        ],
+    ],
 ];
