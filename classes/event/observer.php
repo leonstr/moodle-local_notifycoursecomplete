@@ -28,9 +28,7 @@ class observer {
     public static function course_completed(\core\event\base $event) {
         global $USER, $DB;
 
-        // FIXME Is there a better/API way to get student user details?
-        $student = $DB->get_record('user', array('id' => $event->relateduserid), '*', MUST_EXIST);
-
+        $student = \core_user::get_user($event->relateduserid);
         $course = get_course($event->courseid);
         $context = \context_course::instance($course->id);
 
@@ -56,7 +54,8 @@ class observer {
         $eventdata->fullmessageformat = FORMAT_HTML;
         $eventdata->fullmessagehtml   = $messagebody;
         $eventdata->smallmessage      = $messageplaintext;
-        $teachers = get_enrolled_users($context, 'report/completion:view');
+        $teachers = get_enrolled_users($context, 'report/completion:view', 0,
+                    'u.*', null, 0, 0, true);
 
         $separategroups = ($course->groupmode == SEPARATEGROUPS);
 
