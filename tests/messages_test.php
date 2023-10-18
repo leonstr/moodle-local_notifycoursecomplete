@@ -32,6 +32,7 @@ class messages_test extends \advanced_testcase {
     public function setUp(): void {
         global $CFG;
 
+        require_once($CFG->dirroot.'/completion/criteria/completion_criteria.php');
         require_once($CFG->dirroot.'/completion/criteria/completion_criteria_activity.php');
     }
 
