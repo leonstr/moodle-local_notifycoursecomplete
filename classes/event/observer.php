@@ -26,7 +26,7 @@ namespace local_notifycoursecomplete\event;
 
 class observer {
     public static function course_completed(\core\event\base $event) {
-        global $USER, $DB;
+        global $USER;
 
         $student = \core_user::get_user($event->relateduserid);
         $course = get_course($event->courseid);
@@ -54,8 +54,9 @@ class observer {
         $eventdata->fullmessageformat = FORMAT_HTML;
         $eventdata->fullmessagehtml   = $messagebody;
         $eventdata->smallmessage      = $messageplaintext;
-        $teachers = get_enrolled_users($context, 'report/completion:view', 0,
-                    'u.*', null, 0, 0, true);
+        $teachers = get_enrolled_users($context,
+                    'local/notifycoursecomplete:receivenotification', 0, 'u.*',
+                    null, 0, 0, true);
 
         $separategroups = ($course->groupmode == SEPARATEGROUPS);
 

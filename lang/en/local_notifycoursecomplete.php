@@ -23,9 +23,8 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 $string['messageprovider:teacherstudentcomplete'] = 'Teacher\'s student completed course';
 $string['pluginname'] = 'Notify teacher course completed';
 $string['coursecompleted'] = 'Course completed';
 $string['coursecompletedmessage'] = '<p>Student <a href="{$a->studentlink}">{$a->studentname}</a> has completed the course <a href="{$a->courselink}">{$a->coursename}</a>.</p>';
+$string['notifycoursecomplete:receivenotification'] = 'Receive completion notification';
