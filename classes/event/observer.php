@@ -32,7 +32,17 @@ class observer {
         $course = get_course($event->courseid);
         $context = \context_course::instance($course->id);
 
-        $messagesubject = get_string('coursecompleted', 'local_notifycoursecomplete');
+        $eventdata = new \core\message\message();
+        $eventdata->courseid          = $course->id;
+        $eventdata->component         = 'local_notifycoursecomplete';
+        $eventdata->name              = 'teacherstudentcomplete';
+        $eventdata->userfrom          = \core_user::get_noreply_user();
+        $eventdata->notification      = 1;
+        $eventdata->fullmessageformat = FORMAT_HTML;
+        $teachers = get_enrolled_users($context,
+                    'local/notifycoursecomplete:receivenotification', 0, 'u.*',
+                    null, 0, 0, true);
+
         $a = [
             'coursename' => get_course_display_name_for_list($course),
             'courselink' => (string) new \moodle_url('/course/view.php', ['id' => $course->id]),
@@ -40,28 +50,10 @@ class observer {
             'studentlink' => (string) new \moodle_url('/user/view.php', ['id' => $event->userid, 'course' => $event->courseid]),
         ];
 
-        $messagebody = get_string('coursecompletedmessage', 'local_notifycoursecomplete', $a);
-        $messageplaintext = html_to_text($messagebody);
-
-        $eventdata = new \core\message\message();
-        $eventdata->courseid          = $course->id;
-        $eventdata->component         = 'local_notifycoursecomplete';
-        $eventdata->name              = 'teacherstudentcomplete';
-        $eventdata->userfrom          = \core_user::get_noreply_user();
-        $eventdata->notification      = 1;
-        $eventdata->subject           = $messagesubject;
-        $eventdata->fullmessage       = $messageplaintext;
-        $eventdata->fullmessageformat = FORMAT_HTML;
-        $eventdata->fullmessagehtml   = $messagebody;
-        $eventdata->smallmessage      = $messageplaintext;
-        $teachers = get_enrolled_users($context,
-                    'local/notifycoursecomplete:receivenotification', 0, 'u.*',
-                    null, 0, 0, true);
-
+        $stringman = get_string_manager();
         $separategroups = ($course->groupmode == SEPARATEGROUPS);
 
         foreach ($teachers as $teacher) {
-            $eventdata->userto = $teacher->id;
 
             // As groups_user_groups_visible() compares the target user with
             // the current $USER we must populate that global, stashing and
@@ -73,6 +65,13 @@ class observer {
             // recipient has accessallgroups, or the recipient is in the same
             // group as the student then send message.
             if (!$separategroups || has_capability('moodle/site:accessallgroups', $context, $teacher) || groups_user_groups_visible($course, $student->id)) {
+                $eventdata->userto = $teacher->id;
+                $eventdata->subject = $stringman->get_string('coursecompleted', 'local_notifycoursecomplete', null, $teacher->lang);
+                $messagebody = $stringman->get_string('coursecompletedmessage', 'local_notifycoursecomplete', $a, $teacher->lang);
+                $messageplaintext = html_to_text($messagebody);
+                $eventdata->fullmessage       = $messageplaintext;
+                $eventdata->fullmessagehtml   = $messagebody;
+                $eventdata->smallmessage      = $messageplaintext;
                 message_send($eventdata);
             }
 
