@@ -26,28 +26,27 @@ namespace local_notifycoursecomplete\event;
 
 class observer {
     public static function course_completed(\core\event\base $event) {
-        global $USER;
+        global $USER, $DB;
 
         $student = \core_user::get_user($event->relateduserid);
         $course = get_course($event->courseid);
         $context = \context_course::instance($course->id);
 
-        $eventdata = new \core\message\message();
-        $eventdata->courseid          = $course->id;
-        $eventdata->component         = 'local_notifycoursecomplete';
-        $eventdata->name              = 'teacherstudentcomplete';
-        $eventdata->userfrom          = \core_user::get_noreply_user();
-        $eventdata->notification      = 1;
-        $eventdata->fullmessageformat = FORMAT_HTML;
+        $record = new \stdClass();
+        $record->courseid = $course->id;
+        $record->timecreated = time();
+
         $teachers = get_enrolled_users($context,
                     'local/notifycoursecomplete:receivenotification', 0, 'u.*',
                     null, 0, 0, true);
 
         $a = [
             'coursename' => get_course_display_name_for_list($course),
-            'courselink' => (string) new \moodle_url('/course/view.php', ['id' => $course->id]),
+            'courselink' => (string) new \moodle_url('/course/view.php',
+                            ['id' => $course->id]),
             'studentname' => fullname($student),
-            'studentlink' => (string) new \moodle_url('/user/view.php', ['id' => $event->userid, 'course' => $event->courseid]),
+            'studentlink' => (string) new \moodle_url('/user/view.php',
+                             ['id' => $student->id, 'course' => $course->id]),
         ];
 
         $stringman = get_string_manager();
@@ -65,14 +64,15 @@ class observer {
             // recipient has accessallgroups, or the recipient is in the same
             // group as the student then send message.
             if (!$separategroups || has_capability('moodle/site:accessallgroups', $context, $teacher) || groups_user_groups_visible($course, $student->id)) {
-                $eventdata->userto = $teacher->id;
-                $eventdata->subject = $stringman->get_string('coursecompleted', 'local_notifycoursecomplete', null, $teacher->lang);
-                $messagebody = $stringman->get_string('coursecompletedmessage', 'local_notifycoursecomplete', $a, $teacher->lang);
-                $messageplaintext = html_to_text($messagebody);
-                $eventdata->fullmessage       = $messageplaintext;
-                $eventdata->fullmessagehtml   = $messagebody;
-                $eventdata->smallmessage      = $messageplaintext;
-                message_send($eventdata);
+                $record->useridto = $teacher->id;
+                $record->subject = $stringman->get_string('coursecompleted',
+                            'local_notifycoursecomplete',
+                            null, $teacher->lang);
+                $record->fullmessagehtml = $stringman->get_string(
+                            'coursecompletedmessage',
+                            'local_notifycoursecomplete',
+                            $a, $teacher->lang);
+                $DB->insert_record('local_notifycoursecomplete', $record);
             }
 
             $USER = $olduser;

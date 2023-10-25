@@ -25,5 +25,5 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_notifycoursecomplete';
-$plugin->version = 2023101800;
+$plugin->version = 2023102001;
 $plugin->requires = 2022112800;

@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - https://moodle.org/
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,20 +12,25 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin strings are defined here.
+ * Task definition for local_notifycoursecomplete
  *
  * @package     local_notifycoursecomplete
- * @category    string
  * @copyright   2023 Leon Stringer <leon.stringer@ntlworld.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['messageprovider:teacherstudentcomplete'] = 'Teacher\'s student completed course';
-$string['pluginname'] = 'Notify teacher course completed';
-$string['coursecompleted'] = 'Course completed';
-$string['coursecompletedmessage'] = '<p>Student <a href="{$a->studentlink}">{$a->studentname}</a> has completed the course <a href="{$a->courselink}">{$a->coursename}</a>.</p>';
-$string['notifycoursecomplete:receivenotification'] = 'Receive completion notification';
-$string['sendnotificationstask'] = 'Send course completion notifications to teachers';
+$tasks = [
+    [
+        'classname' => '\local_notifycoursecomplete\task\send_notifications',
+        'blocking' => 0,
+        'minute' => '*',
+        'hour' => '*',
+        'day' => '*',
+        'month' => '*',
+        'dayofweek' => '*',
+        'disabled' => 0
+    ],
+];
