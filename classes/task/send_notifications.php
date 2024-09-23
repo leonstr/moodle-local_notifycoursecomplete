@@ -52,7 +52,7 @@ class send_notifications extends \core\task\scheduled_task {
             $eventdata->courseid = $record->courseid;
             $eventdata->userto = $record->useridto;
             $eventdata->subject = $record->subject;
-            $messageplaintext = html_to_text($record->fullmessagehtml);
+            $messageplaintext = html_to_text($record->fullmessagehtml, 0);
             $eventdata->fullmessage = $messageplaintext;
             $eventdata->fullmessagehtml = $record->fullmessagehtml;
             $eventdata->smallmessage = $messageplaintext;
