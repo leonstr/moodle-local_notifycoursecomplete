@@ -24,6 +24,13 @@
 
 namespace local_notifycoursecomplete\task;
 
+/**
+ * Send course completion notifications task.
+ *
+ * @package     local_notifycoursecomplete
+ * @copyright   2023 Leon Stringer <leon.stringer@ntlworld.com>
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class send_notifications extends \core\task\scheduled_task {
     /**
      * Name for this task.
@@ -58,7 +65,7 @@ class send_notifications extends \core\task\scheduled_task {
             $eventdata->smallmessage = $messageplaintext;
             message_send($eventdata);
 
-            $DB->delete_records('local_notifycoursecomplete', array('id' => $record->id));
+            $DB->delete_records('local_notifycoursecomplete', ['id' => $record->id]);
         }
     }
 }

@@ -24,8 +24,21 @@
 
 namespace local_notifycoursecomplete\event;
 
+/**
+ * Event observer.
+ *
+ * @package     local_notifycoursecomplete
+ * @copyright   2023 Leon Stringer <leon.stringer@ntlworld.com>
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class observer {
-    public static function course_completed(\core\event\base $event) {
+    /**
+     * When a participant completes a course determine if anyone should be
+     * notified and queue a notification if so.
+     * @param \core\event\course_completed $event Event triggered by
+     * participant completing course.
+     */
+    public static function course_completed(\core\event\course_completed $event) {
         global $USER, $DB;
 
         $student = \core_user::get_user($event->relateduserid);
@@ -63,7 +76,9 @@ class observer {
             // If the course does not have Group mode: Separate groups, or the
             // recipient has accessallgroups, or the recipient is in the same
             // group as the student then send message.
-            if (!$separategroups || has_capability('moodle/site:accessallgroups', $context, $teacher) || groups_user_groups_visible($course, $student->id)) {
+            if (!$separategroups
+                    || has_capability('moodle/site:accessallgroups', $context, $teacher)
+                    || groups_user_groups_visible($course, $student->id)) {
                 $record->useridto = $teacher->id;
                 $record->subject = $stringman->get_string('coursecompleted',
                             'local_notifycoursecomplete',

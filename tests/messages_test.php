@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Test that notifications are generated and sent to the expected recipients.
  * @package     local_notifycoursecomplete
  * @copyright   2023 Leon Stringer <leon.stringer@ntlworld.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,7 +26,7 @@ namespace local_notifycoursecomplete;
 /**
  * PHPUnit tests for local_notifycoursecomplete.
  */
-class messages_test extends \advanced_testcase {
+final class messages_test extends \advanced_testcase {
     /**
      * Test setup.
      */
@@ -36,7 +37,10 @@ class messages_test extends \advanced_testcase {
         require_once($CFG->dirroot.'/completion/criteria/completion_criteria_activity.php');
     }
 
-    private function run_scheduled_task() {
+    /**
+     * Run the plugin's scheduled task.
+     */
+    private function run_scheduled_task(): void {
         $task = new \local_notifycoursecomplete\task\send_notifications();
         $task->execute();
     }
@@ -44,7 +48,7 @@ class messages_test extends \advanced_testcase {
     /**
      * Check non-editing teacher (no accessallgroups) receives notification.
      */
-    public function test_no_groups() {
+    public function test_no_groups(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -93,7 +97,7 @@ class messages_test extends \advanced_testcase {
      * In a course with group mode: separate groups, check non-editing teacher
      * (no accessallgroups) receives notification for student in same group.
      */
-    public function test_same_group() {
+    public function test_same_group(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -102,7 +106,7 @@ class messages_test extends \advanced_testcase {
         // teacher.
         $course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
         // Update the course set the groupmode SEPARATEGROUPS and forced.
-        update_course((object)array('id' => $course->id, 'groupmode' => SEPARATEGROUPS, 'groupmodeforce' => true));
+        update_course((object)['id' => $course->id, 'groupmode' => SEPARATEGROUPS, 'groupmodeforce' => true]);
         $assign = $this->getDataGenerator()->create_module('assign', ['course' => $course->id], ['completion' => 1]);
         $student = $this->getDataGenerator()->create_user();
         $studentrole = $DB->get_record('role', ['shortname' => 'student']);
@@ -112,9 +116,9 @@ class messages_test extends \advanced_testcase {
         $this->getDataGenerator()->enrol_user($teacher->id, $course->id, $teacherrole->id);
 
         // Create group, add student and teacher to it.
-        $group = $this->getDataGenerator()->create_group(array('courseid' => $course->id));
-        $this->getDataGenerator()->create_group_member(array('groupid' => $group->id, 'userid' => $student->id));
-        $this->getDataGenerator()->create_group_member(array('groupid' => $group->id, 'userid' => $teacher->id));
+        $group = $this->getDataGenerator()->create_group(['courseid' => $course->id]);
+        $this->getDataGenerator()->create_group_member(['groupid' => $group->id, 'userid' => $student->id]);
+        $this->getDataGenerator()->create_group_member(['groupid' => $group->id, 'userid' => $teacher->id]);
 
         // Set completion criteria.
         $criteriadata = (object) [
@@ -145,7 +149,7 @@ class messages_test extends \advanced_testcase {
      * (no accessallgroups) does not receive notification for student in
      * different group.
      */
-    public function test_different_group() {
+    public function test_different_group(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -154,7 +158,7 @@ class messages_test extends \advanced_testcase {
         // teacher.
         $course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
         // Update the course set the groupmode SEPARATEGROUPS and forced.
-        update_course((object)array('id' => $course->id, 'groupmode' => SEPARATEGROUPS, 'groupmodeforce' => true));
+        update_course((object)['id' => $course->id, 'groupmode' => SEPARATEGROUPS, 'groupmodeforce' => true]);
         $assign = $this->getDataGenerator()->create_module('assign', ['course' => $course->id], ['completion' => 1]);
         $student = $this->getDataGenerator()->create_user();
         $studentrole = $DB->get_record('role', ['shortname' => 'student']);
@@ -164,12 +168,12 @@ class messages_test extends \advanced_testcase {
         $this->getDataGenerator()->enrol_user($teacher->id, $course->id, $teacherrole->id);
 
         // Create first group, add student to it.
-        $group = $this->getDataGenerator()->create_group(array('courseid' => $course->id));
-        $this->getDataGenerator()->create_group_member(array('groupid' => $group->id, 'userid' => $student->id));
+        $group = $this->getDataGenerator()->create_group(['courseid' => $course->id]);
+        $this->getDataGenerator()->create_group_member(['groupid' => $group->id, 'userid' => $student->id]);
 
         // Create second group, add teacher to it.
-        $group = $this->getDataGenerator()->create_group(array('courseid' => $course->id));
-        $this->getDataGenerator()->create_group_member(array('groupid' => $group->id, 'userid' => $teacher->id));
+        $group = $this->getDataGenerator()->create_group(['courseid' => $course->id]);
+        $this->getDataGenerator()->create_group_member(['groupid' => $group->id, 'userid' => $teacher->id]);
 
         // Set completion criteria.
         $criteriadata = (object) [
