@@ -23,8 +23,8 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['coursecompleted'] = 'Course completed';
 $string['coursecompletedmessage'] = '<p>Student <a href="{$a->studentlink}">{$a->studentname}</a> has completed the course <a href="{$a->courselink}">{$a->coursename}</a>.</p>';
+$string['coursecompletedsubject'] = 'Course completed';
 $string['messageprovider:teacherstudentcomplete'] = 'Teacher\'s student completed course';
 $string['notifycoursecomplete:receivenotification'] = 'Receive completion notification';
 $string['pluginname'] = 'Notify teacher course completed';

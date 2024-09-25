@@ -80,9 +80,10 @@ class observer {
                     || has_capability('moodle/site:accessallgroups', $context, $teacher)
                     || groups_user_groups_visible($course, $student->id)) {
                 $record->useridto = $teacher->id;
-                $record->subject = $stringman->get_string('coursecompleted',
+                $record->subject = $stringman->get_string(
+                            'coursecompletedsubject',
                             'local_notifycoursecomplete',
-                            null, $teacher->lang);
+                            $a, $teacher->lang);
                 $record->fullmessagehtml = $stringman->get_string(
                             'coursecompletedmessage',
                             'local_notifycoursecomplete',
