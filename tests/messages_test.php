@@ -25,6 +25,8 @@ namespace local_notifycoursecomplete;
 
 /**
  * PHPUnit tests for local_notifycoursecomplete.
+ * @covers \local_notifycoursecomplete\event\observer::course_completed
+ * @covers \local_notifycoursecomplete\task\send_notifications::execute
  */
 final class messages_test extends \advanced_testcase {
     /**
@@ -33,8 +35,9 @@ final class messages_test extends \advanced_testcase {
     public function setUp(): void {
         global $CFG;
 
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria.php');
-        require_once($CFG->dirroot.'/completion/criteria/completion_criteria_activity.php');
+        parent::setUp();
+        require_once($CFG->dirroot . '/completion/criteria/completion_criteria.php');
+        require_once($CFG->dirroot . '/completion/criteria/completion_criteria_activity.php');
     }
 
     /**
@@ -76,6 +79,7 @@ final class messages_test extends \advanced_testcase {
         set_user_preference('message_provider_local_notifycoursecomplete_teacherstudentcomplete_enabled', 'email', $teacher);
         set_user_preference('message_provider_moodle_coursecompleted_enabled', 'none', $student);
 
+        $this->preventResetByRollback();
         $sink = $this->redirectEmails();
 
         // Mark the user to complete the criteria.
@@ -89,8 +93,9 @@ final class messages_test extends \advanced_testcase {
 
         $message = reset($messages);
         $this->assertStringContainsString(
-                wordwrap("Student " . fullname($student) . " [1] has completed the course {$course->fullname} [2]", 75, "\r\n"),
-                quoted_printable_decode($message->body));
+            wordwrap("Student " . fullname($student) . " [1] has completed the course {$course->fullname} [2]", 75, "\r\n"),
+            quoted_printable_decode($message->body)
+        );
     }
 
     /**
@@ -132,6 +137,7 @@ final class messages_test extends \advanced_testcase {
         set_user_preference('message_provider_local_notifycoursecomplete_teacherstudentcomplete_enabled', 'email', $teacher);
         set_user_preference('message_provider_moodle_coursecompleted_enabled', 'none', $student);
 
+        $this->preventResetByRollback();
         $sink = $this->redirectEmails();
 
         // Mark the user to complete the criteria.
@@ -187,6 +193,7 @@ final class messages_test extends \advanced_testcase {
         set_user_preference('message_provider_local_notifycoursecomplete_teacherstudentcomplete_enabled', 'email', $teacher);
         set_user_preference('message_provider_moodle_coursecompleted_enabled', 'none', $student);
 
+        $this->preventResetByRollback();
         $sink = $this->redirectEmails();
 
         // Mark the user to complete the criteria.

@@ -49,24 +49,33 @@ class observer {
         $record->courseid = $course->id;
         $record->timecreated = time();
 
-        $teachers = get_enrolled_users($context,
-                    'local/notifycoursecomplete:receivenotification', 0, 'u.*',
-                    null, 0, 0, true);
+        $teachers = get_enrolled_users(
+            $context,
+            'local/notifycoursecomplete:receivenotification',
+            0,
+            'u.*',
+            null,
+            0,
+            0,
+            true
+        );
 
         $a = [
             'coursename' => get_course_display_name_for_list($course),
-            'courselink' => (string) new \moodle_url('/course/view.php',
-                            ['id' => $course->id]),
+            'courselink' => (string) new \moodle_url('/course/view.php', [
+                'id' => $course->id,
+            ]),
             'studentname' => fullname($student),
-            'studentlink' => (string) new \moodle_url('/user/view.php',
-                             ['id' => $student->id, 'course' => $course->id]),
+            'studentlink' => (string) new \moodle_url('/user/view.php', [
+                'id' => $student->id,
+                'course' => $course->id,
+            ]),
         ];
 
         $stringman = get_string_manager();
         $separategroups = ($course->groupmode == SEPARATEGROUPS);
 
         foreach ($teachers as $teacher) {
-
             // As groups_user_groups_visible() compares the target user with
             // the current $USER we must populate that global, stashing and
             // restoring the value before and after the call.
@@ -76,18 +85,24 @@ class observer {
             // If the course does not have Group mode: Separate groups, or the
             // recipient has accessallgroups, or the recipient is in the same
             // group as the student then send message.
-            if (!$separategroups
-                    || has_capability('moodle/site:accessallgroups', $context, $teacher)
-                    || groups_user_groups_visible($course, $student->id)) {
+            if (
+                !$separategroups
+                || has_capability('moodle/site:accessallgroups', $context, $teacher)
+                || groups_user_groups_visible($course, $student->id)
+            ) {
                 $record->useridto = $teacher->id;
                 $record->subject = $stringman->get_string(
-                            'coursecompletedsubject',
-                            'local_notifycoursecomplete',
-                            $a, $teacher->lang);
+                    'coursecompletedsubject',
+                    'local_notifycoursecomplete',
+                    $a,
+                    $teacher->lang
+                );
                 $record->fullmessagehtml = $stringman->get_string(
-                            'coursecompletedmessage',
-                            'local_notifycoursecomplete',
-                            $a, $teacher->lang);
+                    'coursecompletedmessage',
+                    'local_notifycoursecomplete',
+                    $a,
+                    $teacher->lang
+                );
                 $DB->insert_record('local_notifycoursecomplete', $record);
             }
 

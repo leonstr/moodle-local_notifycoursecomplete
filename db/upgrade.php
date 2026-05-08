@@ -35,7 +35,6 @@ function xmldb_local_notifycoursecomplete_upgrade($oldversion) {
     $dbman = $DB->get_manager();
 
     if ($oldversion < 2023102001) {
-
         // Define table local_notifycoursecomplete to be created.
         $table = new xmldb_table('local_notifycoursecomplete');
 
